@@ -1,0 +1,6 @@
+{
+  "name": "Road Fighter",
+  "description": "A retro-style 2D vertical racing game inspired by the arcade classic Road Fighter, built with React and HTML5 Canvas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

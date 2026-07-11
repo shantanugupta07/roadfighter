@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Road Fighter</string>
+    <string name="title_activity_main">Road Fighter</string>
+    <string name="package_name">com.roadfighter.app</string>
+    <string name="custom_url_scheme">com.roadfighter.app</string>
+</resources>
