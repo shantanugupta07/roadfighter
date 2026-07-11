@@ -1435,7 +1435,7 @@ export default function GameCanvas({
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-5xl mx-auto h-full p-2 gap-4" id="roadfighter-cabinet-wrapper">
       {/* Upper Cabinet Marquee Panel */}
-      <div className="w-full bg-slate-950 text-red-500 font-mono flex items-center justify-between border-4 border-red-600 rounded-md py-3 px-6 shadow-2xl relative" id="marquee-header">
+      <div className="w-full bg-slate-950 text-red-500 font-mono flex items-center justify-between border-2 md:border-4 border-red-600 rounded-md py-2 md:py-3 px-3 md:px-6 shadow-2xl relative" id="marquee-header">
         <div className="absolute inset-0 bg-radial from-transparent to-red-950/40 pointer-events-none"></div>
         <div className="flex items-center gap-3">
           <Flame className="w-8 h-8 text-yellow-500 animate-pulse" />
@@ -1535,8 +1535,38 @@ export default function GameCanvas({
           </div>
         </div>
 
+        {/* MOBILE HEADS-UP DISPLAY (HUD): ONLY ON SMALL SCREENS */}
+        <div className="w-full max-w-[480px] md:hidden bg-slate-900 border-2 border-slate-800 rounded-md p-2.5 flex justify-between items-center text-xs font-mono text-slate-300 shadow-xl" id="mobile-hud">
+          <div className="flex flex-col items-center">
+            <span className="text-[9px] text-slate-500 font-sans">SCORE</span>
+            <span className="text-yellow-400 font-bold font-mono text-sm leading-none">{stats.score.toLocaleString()}</span>
+          </div>
+          <div className="flex flex-col items-center w-20">
+            <span className="text-[9px] text-slate-500 font-sans">FUEL FLUID</span>
+            <span className={`text-xs font-bold leading-none ${stats.fuel < 20 ? 'text-red-500 animate-pulse font-bold' : 'text-emerald-400'}`}>{stats.fuel}%</span>
+            <div className="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden mt-1 flex border border-slate-800">
+              <div
+                className={`h-full rounded-full ${stats.fuel < 20 ? 'bg-red-600 animate-pulse' : stats.fuel < 45 ? 'bg-yellow-500' : 'bg-emerald-500'}`}
+                style={{ width: `${stats.fuel}%` }}
+              ></div>
+            </div>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-[9px] text-slate-500 font-sans">GEAR</span>
+            <span className={`text-xs font-bold leading-none ${stats.gear === 'HIGH' ? 'text-rose-500 font-bold' : 'text-emerald-400 font-bold'}`}>{stats.gear}</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-[9px] text-slate-500 font-sans">VELOCITY</span>
+            <span className={`text-sm font-bold leading-none font-mono ${stats.speed > 300 ? 'text-red-500 animate-pulse' : 'text-white'}`}>{stats.speed} <span className="text-[9px] text-slate-500">KM/H</span></span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-[9px] text-slate-500 font-sans">STG</span>
+            <span className="text-cyan-400 font-bold text-sm leading-none font-mono">#{stats.stageId}</span>
+          </div>
+        </div>
+
         {/* CENTER COMPONENT: THE HTML5 RETRO CANVAS SCREEN */}
-        <div className="flex-1 bg-slate-950 rounded-lg border-4 border-slate-800 relative flex items-center justify-center overflow-hidden shadow-2xl aspect-[5/7] max-w-[480px] mx-auto md:mx-0" id="canvas-monitor-bezel">
+        <div className="flex-1 bg-slate-950 rounded-lg border-2 md:border-4 border-slate-800 relative flex items-center justify-center overflow-hidden shadow-2xl aspect-[5/7] max-w-[480px] mx-auto md:mx-0" id="canvas-monitor-bezel">
           {/* Scanlines overlays for CRT monitor feel */}
           <div className="absolute inset-0 bg-scanlines pointer-events-none opacity-25 z-10"></div>
           <div className="absolute inset-0 bg-radial-vignette pointer-events-none opacity-45 z-10"></div>
@@ -1668,8 +1698,25 @@ export default function GameCanvas({
           )}
         </div>
 
+        {/* MOBILE PROGRESS BAR: ONLY ON SMALL SCREENS */}
+        <div className="w-full max-w-[480px] md:hidden bg-slate-900 border border-slate-800 rounded-md p-1.5 flex items-center justify-between text-[10px] font-mono text-slate-400 shadow-md gap-2" id="mobile-road-progress">
+          <span className="text-slate-500 font-bold">S</span>
+          <div className="flex-1 bg-slate-950 h-2 rounded-full relative overflow-hidden flex items-center border border-slate-800">
+            <div
+              className="bg-cyan-500 h-full opacity-40"
+              style={{ width: `${gameRef.current.stageProgress * 100}%` }}
+            ></div>
+            <div
+              className="absolute w-2 h-2 bg-red-600 rounded-full border border-white"
+              style={{ left: `calc(${gameRef.current.stageProgress * 100}% - 4px)` }}
+            ></div>
+          </div>
+          <span className="text-red-500 font-bold">F</span>
+          <span className="text-[9px] text-slate-500 font-sans shrink-0">{stats.distanceCovered}M / {stage.length}M</span>
+        </div>
+
         {/* RIGHT COMPONENT: THE RETRO SCI-FI MECHANICAL DASHBOARD */}
-        <div className="w-full md:w-56 bg-slate-900 border-2 border-slate-800 rounded-md p-4 flex flex-col justify-between text-slate-300 font-mono shadow-xl relative" id="right-sidebar-cabinet">
+        <div className="hidden md:flex flex-col w-56 bg-slate-900 border-2 border-slate-800 rounded-md p-4 justify-between text-slate-300 font-mono shadow-xl relative" id="right-sidebar-cabinet">
           <div className="flex flex-col gap-4">
             
             {/* SCORE DISPLAY */}
@@ -1818,6 +1865,7 @@ export default function GameCanvas({
           <div className="col-span-2 flex flex-col justify-center items-center gap-1.5">
             <button
               onClick={handleGearToggle}
+              onTouchStart={(e) => { e.preventDefault(); handleGearToggle(); }}
               className="w-full bg-rose-650 hover:bg-rose-600 active:bg-rose-700 text-white border border-rose-800 py-1 px-1 rounded text-[10px] font-bold font-mono text-center shadow select-none"
               id="btn-gear-shift"
             >

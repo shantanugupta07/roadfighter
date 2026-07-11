@@ -32,7 +32,7 @@ export default function App() {
 
   return (
     <div
-      className="min-h-screen w-full bg-[#030712] bg-grid-pattern flex flex-col items-center justify-between py-6 px-4 relative overflow-x-hidden selection:bg-red-600 selection:text-white"
+      className="min-h-screen w-full bg-[#030712] bg-grid-pattern flex flex-col items-center justify-between py-2 md:py-6 px-2 md:px-4 relative overflow-x-hidden selection:bg-red-600 selection:text-white"
       id="arcade-room-container"
     >
       {/* Background Neon ambient glows */}
@@ -58,7 +58,7 @@ export default function App() {
       )}
 
       {/* Humble Footer containing licensing info */}
-      <footer className="w-full text-center py-4 text-[11px] text-slate-600 font-mono tracking-wider z-10 select-none">
+      <footer className="hidden md:block w-full text-center py-4 text-[11px] text-slate-600 font-mono tracking-wider z-10 select-none">
         ROAD FIGHTER RETRO COIN-OP • POWERED BY CANVAS ENGINE • © 2026
       </footer>
     </div>
