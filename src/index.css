@@ -53,6 +53,9 @@
 
 /* Mobile Webview Native-Like Optimizations */
 html, body {
+  /* Prevent scrolling */
+  overflow: hidden;
+
   /* Prevent browser pull-to-refresh */
   overscroll-behavior-y: none;
   
