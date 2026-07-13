@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { GameState, CarType, HazardType, EnemyCar, Obstacle, Particle, StageConfig, GameStats } from '../types';
 import audio from '../utils/AudioEngine';
 import { Play, RotateCcw, Volume2, VolumeX, ShieldAlert, Zap, Award, HelpCircle, Flame } from 'lucide-react';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 // Stages definition
 const STAGE_THEMES = [
@@ -269,6 +270,7 @@ export default function GameCanvas({
     r.gear = r.gear === 'LOW' ? 'HIGH' : 'LOW';
     setStats(prev => ({ ...prev, gear: r.gear }));
     audio.playSkid(); // play a small wheel spin sound for visceral shift!
+    Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
   };
 
   // --------------------------------------------------------
@@ -502,6 +504,7 @@ export default function GameCanvas({
     if (r.isInvulnerable) return;
 
     createExplosion(r.playerX, r.playerY);
+    Haptics.vibrate().catch(() => {});
     r.currentSpeed = 0;
     r.realSpeed = 0;
     r.fuel = Math.max(0, r.fuel - 12); // Hitting wall or car costs fuel!
@@ -1832,7 +1835,7 @@ export default function GameCanvas({
       </div>
 
       {/* MOBILE CONTROLLER TOUCHPAD: REVEALS ONLY ON SMALL SCREENS */}
-      <div className="w-full max-w-[480px] md:hidden bg-slate-900 border-2 border-slate-800 rounded-md p-3 flex flex-col gap-3 font-sans shadow-xl text-slate-300" id="mobile-game-controller">
+      <div className="w-full max-w-[480px] md:hidden bg-slate-900 border-2 border-slate-800 rounded-md p-3 flex flex-col gap-3 font-sans shadow-xl text-slate-300 pb-[calc(12px+env(safe-area-inset-bottom))]" id="mobile-game-controller">
         
         {/* Gear and steering controller layout */}
         <div className="grid grid-cols-12 gap-3">
@@ -1844,6 +1847,7 @@ export default function GameCanvas({
               onMouseUp={() => simulateKeyUp('arrowleft')}
               onTouchStart={(e) => { e.preventDefault(); simulateKeyDown('arrowleft'); }}
               onTouchEnd={(e) => { e.preventDefault(); simulateKeyUp('arrowleft'); }}
+              onTouchCancel={(e) => { e.preventDefault(); simulateKeyUp('arrowleft'); }}
               className="bg-slate-800 hover:bg-slate-700 active:bg-slate-650 h-14 border border-slate-700 rounded-md flex items-center justify-center font-bold text-lg select-none"
               id="btn-steer-left"
             >
@@ -1854,6 +1858,7 @@ export default function GameCanvas({
               onMouseUp={() => simulateKeyUp('arrowright')}
               onTouchStart={(e) => { e.preventDefault(); simulateKeyDown('arrowright'); }}
               onTouchEnd={(e) => { e.preventDefault(); simulateKeyUp('arrowright'); }}
+              onTouchCancel={(e) => { e.preventDefault(); simulateKeyUp('arrowright'); }}
               className="bg-slate-800 hover:bg-slate-700 active:bg-slate-650 h-14 border border-slate-700 rounded-md flex items-center justify-center font-bold text-lg select-none"
               id="btn-steer-right"
             >
@@ -1881,6 +1886,7 @@ export default function GameCanvas({
               onMouseUp={() => simulateKeyUp('arrowdown')}
               onTouchStart={(e) => { e.preventDefault(); simulateKeyDown('arrowdown'); }}
               onTouchEnd={(e) => { e.preventDefault(); simulateKeyUp('arrowdown'); }}
+              onTouchCancel={(e) => { e.preventDefault(); simulateKeyUp('arrowdown'); }}
               className="bg-amber-800 hover:bg-amber-700 active:bg-amber-750 h-14 border border-amber-900 rounded-md flex flex-col items-center justify-center select-none"
               id="btn-brake"
             >
@@ -1892,6 +1898,7 @@ export default function GameCanvas({
               onMouseUp={() => simulateKeyUp('arrowup')}
               onTouchStart={(e) => { e.preventDefault(); simulateKeyDown('arrowup'); }}
               onTouchEnd={(e) => { e.preventDefault(); simulateKeyUp('arrowup'); }}
+              onTouchCancel={(e) => { e.preventDefault(); simulateKeyUp('arrowup'); }}
               className="bg-red-600 hover:bg-red-500 active:bg-red-650 h-14 border border-red-700 rounded-md flex flex-col items-center justify-center select-none"
               id="btn-accel"
             >

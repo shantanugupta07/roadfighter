@@ -50,3 +50,22 @@
 .animate-fade-in {
   animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* Mobile Webview Native-Like Optimizations */
+html, body {
+  /* Prevent browser pull-to-refresh */
+  overscroll-behavior-y: none;
+  
+  /* Prevent touch zooming, panning */
+  touch-action: none;
+  
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+  
+  /* Prevent long-press context menus on mobile */
+  -webkit-touch-callout: none;
+  
+  /* Remove tap highlight color */
+  -webkit-tap-highlight-color: transparent;
+}

@@ -8,6 +8,9 @@ import { GameState, GameStats } from './types';
 import GameCanvas from './components/GameCanvas';
 import InstructionOverlay from './components/InstructionOverlay';
 import audio from './utils/AudioEngine';
+import { App as CapacitorApp } from '@capacitor/app';
+import { StatusBar } from '@capacitor/status-bar';
+import { ScreenOrientation } from '@capacitor/screen-orientation';
 
 export default function App() {
   const [gameState, setGameState] = useState<GameState>(GameState.START);
@@ -28,6 +31,29 @@ export default function App() {
   // Load initial settings
   useEffect(() => {
     setIsMuted(audio.getMuteStatus());
+  }, []);
+
+  // Capacitor Android Configuration
+  useEffect(() => {
+    const initCapacitor = async () => {
+      try {
+        await ScreenOrientation.lock({ orientation: 'portrait' });
+        await StatusBar.hide();
+      } catch (e) {
+        // Fallback for web browser or when plugins are missing
+        console.log("Capacitor plugins not available on this platform.");
+      }
+    };
+    initCapacitor();
+
+    // Intercept physical back button on Android
+    const backButtonListener = CapacitorApp.addListener('backButton', () => {
+      setGameState(GameState.START);
+    });
+
+    return () => {
+      backButtonListener.then(listener => listener.remove()).catch(() => {});
+    };
   }, []);
 
   return (
